@@ -1,4 +1,5 @@
 #!/bin/sh
 
-exit 0
-
+# start services
+sysrc tvheadend_enable="YES"
+service tvheadend restart
