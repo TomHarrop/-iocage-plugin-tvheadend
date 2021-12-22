@@ -3,6 +3,13 @@
 # update ports
 portsnap fetch extract
 
+# tvheadend user will need a login shell for maintenance
+pw adduser \
+	tvheadend \
+	-d /usr/local/etc/tvheadend \
+	-s /usr/local/bin/bash \
+	-c "tvheadend"
+
 # build tvheadend
 cd /usr/ports/multimedia/tvheadend/ || exit 1
 make -DBATCH depends
@@ -28,13 +35,6 @@ OPTIONS_FILE_SET+=TRANSCODING
 OPTIONS_FILE_SET+=XMLTV
 EOF
 
-# tvheadend user will need a login shell for maintenance
-pw adduser \
-	tvheadend \
-	-d /usr/local/etc/tvheadend \
-	-s /usr/local/bin/bash \
-	-c "tvheadend"
-
 make -DBATCH install distclean
 
 # set -C mode to enable config
@@ -43,3 +43,7 @@ sysrc tvheadend_flags="-C"
 # start services
 sysrc tvheadend_enable="YES"
 service tvheadend restart
+
+# we need the time to be correct for EPG to work
+sysrc ntpd_enable="YES"
+service ntpd restart
